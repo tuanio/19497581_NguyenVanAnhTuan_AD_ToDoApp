@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">19497581_NguyenVanAnhTuan_AD_ToDoApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="add_task">AddTask</string>
+    <string name="add_new_task">Add New Task</string>
+    <string name="your_task">Your task</string>
+    <string name="call_mom">Call mom</string>
+    <string name="not_complete">Not complete</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="check">Check</string>
+</resources>
