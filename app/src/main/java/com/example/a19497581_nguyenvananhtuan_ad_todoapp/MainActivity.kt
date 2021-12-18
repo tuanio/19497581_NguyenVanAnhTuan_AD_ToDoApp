@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(), DialogAddItem.DialogAddItemListener {
 
     fun showDialog(isEdit: Boolean = false, currentItem: TaskModel? = null, currentItemPosition: Int? = null) {
         val dialogAddItem = DialogAddItem(binding, isEdit, currentItem, currentItemPosition)
-        dialogAddItem.show(this.supportFragmentManager, "additemtag")
+        dialogAddItem.show(this.supportFragmentManager, "add_item_tag")
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment, isEdit: Boolean, currentItem: TaskModel?, currentItemPosition: Int?) {
@@ -99,37 +99,35 @@ class MainActivity : AppCompatActivity(), DialogAddItem.DialogAddItemListener {
                         .removeValue()
                         .addOnSuccessListener {
                             Log.d(firebaseTag, "Remove old item successfully!")
-                        }.addOnFailureListener {
-                            Log.e(firebaseTag, "Remove old item fail!", it)
+                        }.addOnFailureListener { itExp ->
+                            Log.e(firebaseTag, "Remove old item fail!", itExp)
                         }
                 }
             }
         }
-        if (uniqueID != null) {
-            database
-                .child("task")
-                .child(uniqueID)
-                .setValue(data)
-                .addOnSuccessListener {
-                    // update adapter
-                    val item = TaskModel(uniqueID, data)
+        database
+            .child("task")
+            .child(uniqueID)
+            .setValue(data)
+            .addOnSuccessListener {
+                // update adapter
+                val item = TaskModel(uniqueID, data)
 
-                    if (isEdit) {
-                        dataset[currentItemPosition!!] = item
-                        adapter?.notifyItemChanged(currentItemPosition)
-                    } else {
-                        dataset.add(item)
-                        adapter?.notifyItemInserted(dataset.size - 1)
-                    }
-                }.addOnFailureListener {
-                    Toast.makeText(
-                        baseContext,
-                        "Fail to set value",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    Log.e(firebaseTag, "Fail to set value", it)
+                if (isEdit) {
+                    dataset[currentItemPosition!!] = item
+                    adapter?.notifyItemChanged(currentItemPosition)
+                } else {
+                    dataset.add(item)
+                    adapter?.notifyItemInserted(dataset.size - 1)
                 }
-        }
+            }.addOnFailureListener {
+                Toast.makeText(
+                    baseContext,
+                    "Fail to set value",
+                    Toast.LENGTH_SHORT
+                ).show()
+                Log.e(firebaseTag, "Fail to set value", it)
+            }
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment, isEdit: Boolean, currentItem: TaskModel?, currentItemPosition: Int?) {
