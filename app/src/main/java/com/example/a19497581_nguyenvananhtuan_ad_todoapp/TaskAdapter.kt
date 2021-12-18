@@ -61,7 +61,7 @@ open class TaskAdapter(
         }
 
         if (selectedItem != null) {
-            // ẩn mấy nút đi
+            // hiện nút
             toggleMenu(true)
 
             if (selectedItem == position) {

@@ -1,7 +1,5 @@
 package com.example.a19497581_nguyenvananhtuan_ad_todoapp
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +15,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
-import java.util.logging.SimpleFormatter
 import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), DialogAddItem.DialogAddItemListener {
@@ -34,6 +31,7 @@ class MainActivity : AppCompatActivity(), DialogAddItem.DialogAddItemListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         database = Firebase.database.reference
+        database.keepSynced(true)
 
         setContentView(binding.root)
 
@@ -80,10 +78,11 @@ class MainActivity : AppCompatActivity(), DialogAddItem.DialogAddItemListener {
         val textViewDateTime: TextView = dialog.dialog!!.findViewById(R.id.text_view_datetime)
         val dateTimeFormatted = sdf.parse(textViewDateTime.text.toString())
 
-        val uniqueID = when(isEdit) {
-            false -> "${dateTimeFormatted.time}${System.currentTimeMillis()}" // parsed date + current date for automatic sort
-            else -> currentItem?.id
-        }
+        val uniqueID = "${dateTimeFormatted.time}${System.currentTimeMillis()}" // parsed date + current date for automatic sort
+//        val uniqueID = when(isEdit) {
+//            false -> "${dateTimeFormatted.time}${System.currentTimeMillis()}" // parsed date + current date for automatic sort
+//            else -> currentItem?.id
+//        }
         val data = TaskItemModel(
             taskDesc.text.toString(),
             false,
@@ -91,6 +90,20 @@ class MainActivity : AppCompatActivity(), DialogAddItem.DialogAddItemListener {
         )
         if (currentItemPosition != null) {
             data.status = dataset[currentItemPosition].data?.status
+
+            if (currentItem != null) {
+                currentItem.id?.let {
+                    database
+                        .child("task")
+                        .child(it)
+                        .removeValue()
+                        .addOnSuccessListener {
+                            Log.d(firebaseTag, "Remove old item successfully!")
+                        }.addOnFailureListener {
+                            Log.e(firebaseTag, "Remove old item fail!", it)
+                        }
+                }
+            }
         }
         if (uniqueID != null) {
             database
@@ -114,6 +127,7 @@ class MainActivity : AppCompatActivity(), DialogAddItem.DialogAddItemListener {
                         "Fail to set value",
                         Toast.LENGTH_SHORT
                     ).show()
+                    Log.e(firebaseTag, "Fail to set value", it)
                 }
         }
     }

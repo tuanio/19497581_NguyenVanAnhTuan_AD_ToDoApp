@@ -62,12 +62,10 @@ class DialogAddItem(
 
             builder.setView(view)
                 // Add action buttons
-                .setPositiveButton(R.string.save
-                ) { _, _ ->
+                .setPositiveButton(R.string.save) { _, _ ->
                     listener.onDialogPositiveClick(this, isEdit, currentItem, currentItemPosition)
                 }
-                .setNegativeButton(R.string.cancel
-                ) { _, _ ->
+                .setNegativeButton(R.string.cancel) { _, _ ->
                     listener.onDialogNegativeClick(this, isEdit, currentItem, currentItemPosition)
                 }
             builder.create()
@@ -116,11 +114,6 @@ class DialogAddItem(
         savedMinute = minute
 
         val dateTimeString = "$savedDay/$savedMonth/$savedYear - ${savedHour}:$savedMinute"
-        Log.d(
-            "OKTAG",
-            dateTimeString
-        )
-
         val parsedDate = sdf.parse(dateTimeString)
 
         textViewDateTime.text = sdf.format(parsedDate.time)
